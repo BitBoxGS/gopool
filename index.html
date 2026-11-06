@@ -95,15 +95,9 @@
   .center .lead { margin: 0 auto; }
 
   /* trailer */
-  .trailer { padding-top: 40px; }
+  .trailer { padding-top: 40px; padding-bottom: 0; }
   .trailer video { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: 0 30px 80px rgba(0,0,0,.6); background: #000; margin-top: 36px; }
 
-  /* stats */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); background: var(--bg-2); }
-  .stats div { padding: 28px 12px; text-align: center; }
-  .stats div + div { border-left: 1px solid var(--line); }
-  .stats b { display: block; font: 300 44px/1 "Josefin Sans", sans-serif; color: var(--gold-2); }
-  .stats span { color: var(--muted); font-size: 14px; }
 
   /* features */
   .feature { display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: center; }
@@ -142,9 +136,6 @@
     .feature { grid-template-columns: 1fr; gap: 24px; }
     .feature:nth-child(even) .shot { order: 0; }
     .feature + .feature { margin-top: 64px; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .stats div:nth-child(3) { border-left: 0; }
-    .stats div:nth-child(n+3) { border-top: 1px solid var(--line); }
     .dl-card { padding: 24px 18px; }
     .req { grid-template-columns: 1fr; }
     .bar .btn.small { display: none; }
@@ -199,14 +190,6 @@
     </div>
   </section>
 
-  <!-- NUMBERS -->
-  <div class="stats">
-    <div><b>12</b><span data-i18n="statGames">modos de jogo</span></div>
-    <div><b>63</b><span data-i18n="statCues">tacos para colecionar</span></div>
-    <div><b>8</b><span data-i18n="statRooms">salas, cada uma com rádio</span></div>
-    <div><b>30</b><span data-i18n="statTour">minutos entre torneios</span></div>
-  </div>
-
   <!-- FEATURES -->
   <section>
     <div class="wrap">
@@ -219,21 +202,16 @@
       <div class="feature">
         <div class="shot"><img src="assets/snooker.webp" alt="" loading="lazy"></div>
         <div>
-          <h3 data-i18n="f1Title">12 modos de jogo</h3>
-          <p data-i18n="f1Text">Do 8 Ball ao Three Cushion, passando pelo snooker. Escolha o seu e jogue no modo Arcade ou Simulation.</p>
-          <ul>
-            <li data-i18n="f1a">Pool: 8 Ball, 9 Ball, Rotation e Race</li>
-            <li data-i18n="f1b">Snooker: Snooker, Short Snooker e One Visit</li>
-            <li data-i18n="f1c">Carambola: 3 Cushion, 2 Cushion, 4 Ball, 6 Ball e Bullseye</li>
-          </ul>
+          <h3 data-i18n="f1Title">Pool, snooker e carambola</h3>
+          <p data-i18n="f1Text">Do 8 Ball ao Three Cushion, passando pelo snooker, com novos jogos chegando sempre. Escolha o seu e jogue no modo Arcade ou Simulation.</p>
         </div>
       </div>
 
       <div class="feature">
         <div class="shot"><img src="assets/physics.webp" alt="" loading="lazy"></div>
         <div>
-          <h3 data-i18n="f2Title">Física de verdade</h3>
-          <p data-i18n="f2Text">Efeito, massé, salto e tabelas se comportam como numa mesa real. E cada tacada online é conferida pelo servidor, então ninguém trapaceia na física.</p>
+          <h3 data-i18n="f2Title">Física realista</h3>
+          <p data-i18n="f2Text">Efeito, massé, salto e tabelas se comportam como numa mesa de verdade.</p>
         </div>
       </div>
 
@@ -241,11 +219,11 @@
         <div class="shot"><img src="assets/lobby.webp" alt="" loading="lazy"></div>
         <div>
           <h3 data-i18n="f3Title">Online de verdade</h3>
-          <p data-i18n="f3Text">Crie sua sala ou entre numa partida rápida contra alguém do seu nível.</p>
+          <p data-i18n="f3Text">Jogue contra gente do mundo todo, 24 horas por dia. Crie sua sala ou entre numa partida rápida contra alguém do seu nível.</p>
           <ul>
-            <li data-i18n="f3a">Salas com até 16 pessoas, chat e espectadores</li>
-            <li data-i18n="f3b">Partidas em times de até 3 contra 3</li>
-            <li data-i18n="f3c">Ranking com 18 níveis e Hall of Fame</li>
+            <li data-i18n="f3a">Suba de nível e chegue ao Hall of Fame</li>
+            <li data-i18n="f3b">Quanto mais difícil o jogo, mais pontos você ganha</li>
+            <li data-i18n="f3c">Salas com chat, espectadores e partidas em times</li>
           </ul>
         </div>
       </div>
@@ -254,14 +232,14 @@
         <div class="shot"><img src="assets/tournaments.webp" alt="" loading="lazy"></div>
         <div>
           <h3 data-i18n="f4Title">Torneios o dia todo</h3>
-          <p data-i18n="f4Text">Um torneio novo a cada 30 minutos: 16 jogadores, mata-mata, prêmios e título para o campeão.</p>
+          <p data-i18n="f4Text">Sempre tem um torneio começando: mata-mata, prêmios e título para o campeão.</p>
         </div>
       </div>
 
       <div class="feature">
         <div class="shot"><img src="assets/shop.webp" alt="" loading="lazy"></div>
         <div>
-          <h3 data-i18n="f5Title">63 tacos para evoluir</h3>
+          <h3 data-i18n="f5Title">Tacos para evoluir</h3>
           <p data-i18n="f5Text">Cada taco tem atributos próprios e sobe de nível com gemas, mudando de visual pelo caminho. Muitos têm efeitos de luz e som na tacada.</p>
         </div>
       </div>
@@ -269,16 +247,16 @@
       <div class="feature">
         <div class="shot"><img src="assets/daily.webp" alt="" loading="lazy"></div>
         <div>
-          <h3 data-i18n="f6Title">Sempre tem algo novo</h3>
-          <p data-i18n="f6Text">Desafios de tacada todo dia, missões diárias, presentes por entrar e 90 conquistas para colecionar.</p>
+          <h3 data-i18n="f6Title">Desafios todo dia</h3>
+          <p data-i18n="f6Text">Todo dia tem missões novas e desafios de trickshot para testar sua mira, além de conquistas para colecionar.</p>
         </div>
       </div>
 
       <div class="feature">
         <div class="shot"><img src="assets/rooms.webp" alt="" loading="lazy"></div>
         <div>
-          <h3 data-i18n="f7Title">8 salas para jogar</h3>
-          <p data-i18n="f7Text">Escritório, Cassino, Halloween, Cyberpunk, Nightclub, Arcade, Aquário e Saloon. Cada sala tem a sua rádio.</p>
+          <h3 data-i18n="f7Title">Salas temáticas</h3>
+          <p data-i18n="f7Text">Cassino, Cyberpunk, Halloween, Nightclub, Aquário, Saloon e muitas outras. Cada sala tem sua própria rádio, com uma trilha que combina com o clima do lugar.</p>
         </div>
       </div>
     </div>
@@ -338,30 +316,26 @@
       heroMeta: "Free to play",
       trailerEyebrow: "Trailer",
       trailerTitle: "See Go Pool in action",
-      statGames: "game modes", statCues: "cues to collect", statRooms: "rooms, each with its own radio", statTour: "minutes between tournaments",
       featEyebrow: "The game",
       featTitle: "Everything the table has to offer",
       featLead: "Pool, snooker and carom on the same simulation physics, in a lobby where you play, watch and chat with people from all over the world.",
-      f1Title: "12 game modes",
-      f1Text: "From 8 Ball to Three Cushion, with snooker in between. Pick yours and play it in Arcade or Simulation mode.",
-      f1a: "Pool: 8 Ball, 9 Ball, Rotation and Race",
-      f1b: "Snooker: Snooker, Short Snooker and One Visit",
-      f1c: "Carom: 3 Cushion, 2 Cushion, 4 Ball, 6 Ball and Bullseye",
-      f2Title: "Real physics",
-      f2Text: "Spin, massé, jumps and banks behave like on a real table. And every online shot is checked by the server, so nobody cheats the physics.",
+      f1Title: "Pool, snooker and carom",
+      f1Text: "From 8 Ball to Three Cushion, with snooker in between, and new games on the way. Pick yours and play it in Arcade or Simulation mode.",
+      f2Title: "Realistic physics",
+      f2Text: "Spin, massé, jumps and banks behave just like on a real table.",
       f3Title: "Truly online",
-      f3Text: "Host your own room or jump into a quick match against someone at your level.",
-      f3a: "Rooms for up to 16 people, with chat and spectators",
-      f3b: "Team matches up to 3 vs 3",
-      f3c: "Ranking with 18 levels and a Hall of Fame",
+      f3Text: "Play people from all over the world, 24 hours a day. Host your own room or jump into a quick match against someone at your level.",
+      f3a: "Level up and make it to the Hall of Fame",
+      f3b: "The harder the game, the more points you earn",
+      f3c: "Rooms with chat, spectators and team matches",
       f4Title: "Tournaments all day",
-      f4Text: "A new tournament every 30 minutes: 16 players, knockout, prizes and a title for the champion.",
-      f5Title: "63 cues to level up",
+      f4Text: "There's always a tournament about to start: knockout, prizes and a title for the champion.",
+      f5Title: "Cues to level up",
       f5Text: "Every cue has its own stats and levels up with gems, changing its look along the way. Many have light and sound effects on the shot.",
-      f6Title: "Always something new",
-      f6Text: "Shot challenges every day, daily quests, gifts for logging in and 90 badges to collect.",
-      f7Title: "8 rooms to play in",
-      f7Text: "Office, Casino, Halloween, Cyberpunk, Nightclub, Arcade, Aquarium and Saloon. Every room has its own radio.",
+      f6Title: "Challenges every day",
+      f6Text: "Every day brings new quests and trickshot challenges to test your aim, plus badges to collect.",
+      f7Title: "Themed rooms",
+      f7Text: "Casino, Cyberpunk, Halloween, Nightclub, Aquarium, Saloon and many more. Every room has its own radio, with a soundtrack that matches its mood.",
       dlEyebrow: "Download",
       dlTitle: "Download and play now",
       dlLead: "Go Pool is free. Once installed, it updates itself.",
@@ -384,30 +358,26 @@
       heroMeta: "Gratis para jugar",
       trailerEyebrow: "Tráiler",
       trailerTitle: "Mira Go Pool en acción",
-      statGames: "modos de juego", statCues: "tacos para coleccionar", statRooms: "salas, cada una con su radio", statTour: "minutos entre torneos",
       featEyebrow: "El juego",
       featTitle: "Todo lo que la mesa puede ofrecer",
       featLead: "Pool, snooker y carambola con la misma física de simulación, en un lobby donde juegas, miras y charlas con gente de todo el mundo.",
-      f1Title: "12 modos de juego",
-      f1Text: "Del 8 Ball al Three Cushion, pasando por el snooker. Elige el tuyo y juégalo en modo Arcade o Simulation.",
-      f1a: "Pool: 8 Ball, 9 Ball, Rotation y Race",
-      f1b: "Snooker: Snooker, Short Snooker y One Visit",
-      f1c: "Carambola: 3 Cushion, 2 Cushion, 4 Ball, 6 Ball y Bullseye",
-      f2Title: "Física de verdad",
-      f2Text: "Efecto, massé, saltos y bandas se comportan como en una mesa real. Y cada tiro online lo verifica el servidor, así que nadie hace trampa con la física.",
+      f1Title: "Pool, snooker y carambola",
+      f1Text: "Del 8 Ball al Three Cushion, pasando por el snooker, con nuevos juegos en camino. Elige el tuyo y juégalo en modo Arcade o Simulation.",
+      f2Title: "Física realista",
+      f2Text: "Efecto, massé, saltos y bandas se comportan como en una mesa de verdad.",
       f3Title: "Online de verdad",
-      f3Text: "Crea tu sala o entra en una partida rápida contra alguien de tu nivel.",
-      f3a: "Salas de hasta 16 personas, con chat y espectadores",
-      f3b: "Partidas por equipos de hasta 3 contra 3",
-      f3c: "Ranking con 18 niveles y Hall of Fame",
+      f3Text: "Juega contra gente de todo el mundo, las 24 horas. Crea tu sala o entra en una partida rápida contra alguien de tu nivel.",
+      f3a: "Sube de nivel y llega al Hall of Fame",
+      f3b: "Cuanto más difícil el juego, más puntos ganas",
+      f3c: "Salas con chat, espectadores y partidas por equipos",
       f4Title: "Torneos todo el día",
-      f4Text: "Un torneo nuevo cada 30 minutos: 16 jugadores, eliminación directa, premios y título para el campeón.",
-      f5Title: "63 tacos para mejorar",
+      f4Text: "Siempre hay un torneo por empezar: eliminación directa, premios y título para el campeón.",
+      f5Title: "Tacos para mejorar",
       f5Text: "Cada taco tiene sus propios atributos y sube de nivel con gemas, cambiando de aspecto por el camino. Muchos tienen efectos de luz y sonido en el tiro.",
-      f6Title: "Siempre hay algo nuevo",
-      f6Text: "Desafíos de tiro cada día, misiones diarias, regalos por entrar y 90 insignias para coleccionar.",
-      f7Title: "8 salas para jugar",
-      f7Text: "Oficina, Casino, Halloween, Cyberpunk, Nightclub, Arcade, Acuario y Saloon. Cada sala tiene su propia radio.",
+      f6Title: "Desafíos todos los días",
+      f6Text: "Cada día trae misiones nuevas y desafíos de trickshot para poner a prueba tu puntería, además de insignias para coleccionar.",
+      f7Title: "Salas temáticas",
+      f7Text: "Casino, Cyberpunk, Halloween, Nightclub, Acuario, Saloon y muchas más. Cada sala tiene su propia radio, con una banda sonora que combina con su ambiente.",
       dlEyebrow: "Descarga",
       dlTitle: "Descarga y juega ahora",
       dlLead: "Go Pool es gratis. Una vez instalado, se actualiza solo.",
