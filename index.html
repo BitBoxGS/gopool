@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go Pool</title>
+<meta name="description" content="Go Pool: sinuca, snooker e carambola online, com física realista, torneios e desafios diários. Grátis para Windows.">
+<meta property="og:title" content="Go Pool">
+<meta property="og:description" content="Sinuca, snooker e carambola online, com física realista. Grátis para Windows.">
+<meta property="og:image" content="https://bitboxgs.github.io/gopool/assets/og.jpg">
+<meta property="og:url" content="https://bitboxgs.github.io/gopool/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0d0c">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d0c;
+    --bg-2: #121614;
+    --felt: #0f3b2a;
+    --text: #ece7dc;
+    --muted: #a49e92;
+    --gold: #d9a35b;
+    --gold-2: #f3d39a;
+    --line: rgba(217, 163, 91, .22);
+    --radius: 14px;
+    --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: "Josefin Sans", sans-serif; font-weight: 400; line-height: 1.15; margin: 0; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+  /* top bar */
+  .bar {
+    position: fixed; inset: 0 0 auto; z-index: 10;
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 20px; transition: background .3s, border-color .3s;
+    border-bottom: 1px solid transparent;
+  }
+  .bar.solid { background: rgba(11, 13, 12, .88); backdrop-filter: blur(10px); border-color: var(--line); }
+  .bar .brand { height: 34px; opacity: 0; transition: opacity .3s; }
+  .bar.solid .brand { opacity: 1; }
+  .bar .spacer { flex: 1; }
+  .lang { display: flex; gap: 2px; border: 1px solid var(--line); border-radius: 99px; padding: 3px; }
+  .lang button {
+    background: none; border: 0; color: var(--muted); font: 600 12px Inter, sans-serif;
+    padding: 5px 9px; border-radius: 99px; cursor: pointer; letter-spacing: .04em;
+  }
+  .lang button[aria-pressed="true"] { background: var(--gold); color: #1a1208; }
+
+  /* buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(180deg, var(--gold-2), var(--gold));
+    color: #1a1208; text-decoration: none; font-weight: 600;
+    padding: 14px 26px; border-radius: 99px;
+    box-shadow: 0 8px 30px rgba(217, 163, 91, .25);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 36px rgba(217, 163, 91, .38); }
+  .btn svg { width: 20px; height: 20px; }
+  .btn.small { padding: 8px 16px; font-size: 14px; box-shadow: none; }
+
+  /* hero */
+  .hero { position: relative; min-height: 100svh; display: grid; place-items: center; text-align: center; overflow: hidden; }
+  .hero video, .hero .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(11,13,12,.35) 0%, rgba(11,13,12,.8) 70%), linear-gradient(180deg, transparent 60%, var(--bg));
+  }
+  .hero .inner { position: relative; z-index: 1; padding: 100px 16px 60px; }
+  .hero .logo { width: min(340px, 70vw); margin: 0 auto 28px; filter: drop-shadow(0 10px 40px rgba(0,0,0,.6)); }
+  .hero h1 { font-size: clamp(22px, 3.4vw, 34px); letter-spacing: .02em; max-width: 680px; margin: 0 auto 32px; }
+  .hero .meta { margin-top: 14px; color: var(--muted); font-size: 14px; }
+  .scroll-hint { position: absolute; bottom: 22px; left: 50%; translate: -50% 0; z-index: 1; color: var(--muted); animation: bob 2s infinite; }
+  @keyframes bob { 50% { transform: translateY(6px); } }
+
+  /* section */
+  section { padding: 96px 0; }
+  .eyebrow { color: var(--gold); text-transform: uppercase; letter-spacing: .2em; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+  .title { font-size: clamp(28px, 4vw, 44px); margin-bottom: 18px; }
+  .lead { color: var(--muted); max-width: 620px; font-size: 18px; margin: 0; }
+  .center { text-align: center; }
+  .center .lead { margin: 0 auto; }
+
+  /* trailer */
+  .trailer { padding-top: 40px; }
+  .trailer video { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: 0 30px 80px rgba(0,0,0,.6); background: #000; margin-top: 36px; }
+
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); background: var(--bg-2); }
+  .stats div { padding: 28px 12px; text-align: center; }
+  .stats div + div { border-left: 1px solid var(--line); }
+  .stats b { display: block; font: 300 44px/1 "Josefin Sans", sans-serif; color: var(--gold-2); }
+  .stats span { color: var(--muted); font-size: 14px; }
+
+  /* features */
+  .feature { display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: center; }
+  .feature + .feature { margin-top: 88px; }
+  .feature:nth-child(even) .shot { order: 2; }
+  .shot { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0,0,0,.5); aspect-ratio: 16 / 9; background: var(--bg-2); }
+  .shot img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+  .shot:hover img { transform: scale(1.03); }
+  .feature h3 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 14px; }
+  .feature p { color: var(--muted); margin: 0 0 16px; }
+  .feature ul { margin: 0; padding: 0; list-style: none; }
+  .feature li { padding-left: 22px; position: relative; margin: 6px 0; }
+  .feature li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+  /* download */
+  .download { background: radial-gradient(ellipse at top, var(--felt), var(--bg) 70%); border-top: 1px solid var(--line); }
+  .dl-card { margin: 40px auto 0; max-width: 760px; background: rgba(11,13,12,.7); border: 1px solid var(--line); border-radius: 20px; padding: 36px; }
+  .dl-head { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .dl-head .v { color: var(--muted); font-size: 14px; }
+  .dl-head .v b { color: var(--text); font-weight: 600; }
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 16px; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; }
+  .steps li::before { content: counter(s); width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold); display: grid; place-items: center; font-weight: 600; font-size: 14px; }
+  .steps p { margin: 5px 0 0; }
+  .steps small { display: block; color: var(--muted); margin-top: 2px; }
+  .req { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; font-size: 14px; }
+  .req dt { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+  .req dd { margin: 4px 0 0; }
+
+  footer { padding: 36px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+  footer img { height: 40px; }
+
+  @media (max-width: 820px) {
+    section { padding: 72px 0; }
+    .feature { grid-template-columns: 1fr; gap: 24px; }
+    .feature:nth-child(even) .shot { order: 0; }
+    .feature + .feature { margin-top: 64px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stats div:nth-child(3) { border-left: 0; }
+    .stats div:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .dl-card { padding: 24px 18px; }
+    .req { grid-template-columns: 1fr; }
+    .bar .btn.small { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero video { display: none; }
+    .scroll-hint { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar" id="bar">
+  <a href="#top" aria-label="Go Pool"><img class="brand" src="assets/logo.png" alt="Go Pool"></a>
+  <div class="spacer"></div>
+  <div class="lang" role="group" aria-label="Idioma">
+    <button data-lang="pt">PT</button>
+    <button data-lang="en">EN</button>
+    <button data-lang="es">ES</button>
+  </div>
+  <a class="btn small dl-link" href="#download" data-i18n="navDownload">Baixar</a>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <div class="hero">
+    <img class="poster" src="assets/hero.webp" alt="" aria-hidden="true">
+    <video autoplay muted loop playsinline poster="assets/hero.webp" aria-hidden="true">
+      <source src="assets/hero.mp4" type="video/mp4">
+    </video>
+    <div class="inner">
+      <img class="logo" src="assets/logo.png" alt="Go Pool">
+      <h1 data-i18n="heroTitle">Sinuca, snooker e carambola num jogo só. Online, com física de verdade.</h1>
+      <a class="btn dl-link" href="#download">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+        <span data-i18n="heroCta">Baixar grátis para Windows</span>
+      </a>
+      <div class="meta"><span data-i18n="heroMeta">Grátis para jogar</span> · <span class="ver"></span></div>
+    </div>
+    <svg class="scroll-hint" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+
+  <!-- TRAILER -->
+  <section class="trailer">
+    <div class="wrap center">
+      <div class="eyebrow" data-i18n="trailerEyebrow">Trailer</div>
+      <h2 class="title" data-i18n="trailerTitle">Veja o Go Pool em ação</h2>
+      <video controls preload="none" poster="assets/trailer-poster.webp">
+        <source src="assets/trailer.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <div class="stats">
+    <div><b>12</b><span data-i18n="statGames">modos de jogo</span></div>
+    <div><b>63</b><span data-i18n="statCues">tacos para colecionar</span></div>
+    <div><b>8</b><span data-i18n="statRooms">salas, cada uma com rádio</span></div>
+    <div><b>30</b><span data-i18n="statTour">minutos entre torneios</span></div>
+  </div>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="wrap">
+      <div class="center" style="margin-bottom:64px">
+        <div class="eyebrow" data-i18n="featEyebrow">O jogo</div>
+        <h2 class="title" data-i18n="featTitle">Tudo o que a mesa pode oferecer</h2>
+        <p class="lead" data-i18n="featLead">Pool, snooker e carambola com a mesma física de simulação, num lobby onde você joga, assiste e conversa com gente do mundo todo.</p>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/snooker.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f1Title">12 modos de jogo</h3>
+          <p data-i18n="f1Text">Do 8 Ball ao Three Cushion, passando pelo snooker. Escolha o seu e jogue no modo Arcade ou Simulation.</p>
+          <ul>
+            <li data-i18n="f1a">Pool: 8 Ball, 9 Ball, Rotation e Race</li>
+            <li data-i18n="f1b">Snooker: Snooker, Short Snooker e One Visit</li>
+            <li data-i18n="f1c">Carambola: 3 Cushion, 2 Cushion, 4 Ball, 6 Ball e Bullseye</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/physics.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f2Title">Física de verdade</h3>
+          <p data-i18n="f2Text">Efeito, massé, salto e tabelas se comportam como numa mesa real. E cada tacada online é conferida pelo servidor, então ninguém trapaceia na física.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/lobby.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f3Title">Online de verdade</h3>
+          <p data-i18n="f3Text">Crie sua sala ou entre numa partida rápida contra alguém do seu nível.</p>
+          <ul>
+            <li data-i18n="f3a">Salas com até 16 pessoas, chat e espectadores</li>
+            <li data-i18n="f3b">Partidas em times de até 3 contra 3</li>
+            <li data-i18n="f3c">Ranking com 18 níveis e Hall of Fame</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/tournaments.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f4Title">Torneios o dia todo</h3>
+          <p data-i18n="f4Text">Um torneio novo a cada 30 minutos: 16 jogadores, mata-mata, prêmios e título para o campeão.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/shop.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f5Title">63 tacos para evoluir</h3>
+          <p data-i18n="f5Text">Cada taco tem atributos próprios e sobe de nível com gemas, mudando de visual pelo caminho. Muitos têm efeitos de luz e som na tacada.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/daily.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f6Title">Sempre tem algo novo</h3>
+          <p data-i18n="f6Text">Desafios de tacada todo dia, missões diárias, presentes por entrar e 90 conquistas para colecionar.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot"><img src="assets/rooms.webp" alt="" loading="lazy"></div>
+        <div>
+          <h3 data-i18n="f7Title">8 salas para jogar</h3>
+          <p data-i18n="f7Text">Escritório, Cassino, Halloween, Cyberpunk, Nightclub, Arcade, Aquário e Saloon. Cada sala tem a sua rádio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="download" id="download">
+    <div class="wrap center">
+      <div class="eyebrow" data-i18n="dlEyebrow">Download</div>
+      <h2 class="title" data-i18n="dlTitle">Baixe e jogue agora</h2>
+      <p class="lead" data-i18n="dlLead">O Go Pool é grátis. Depois de instalado, ele se atualiza sozinho.</p>
+    </div>
+    <div class="wrap">
+      <div class="dl-card">
+        <div class="dl-head">
+          <a class="btn dl-link" href="#download" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+            <span data-i18n="dlButton">Baixar para Windows</span>
+          </a>
+          <div class="v"><span data-i18n="dlVersion">Versão</span> <b class="ver"></b> · <span class="size"></span></div>
+        </div>
+        <ol class="steps">
+          <li><p><span data-i18n="s1">Baixe o arquivo .zip pelo botão acima.</span><small data-i18n="s1n">O Google Drive pode avisar que não conseguiu verificar o arquivo por ser grande. É só clicar em "Fazer o download mesmo assim".</small></p></li>
+          <li><p><span data-i18n="s2">Extraia o .zip numa pasta.</span><small data-i18n="s2n">Clique com o botão direito no arquivo e escolha "Extrair tudo".</small></p></li>
+          <li><p><span data-i18n="s3">Abra o Go Pool.exe e crie sua conta.</span><small data-i18n="s3n">Se o Windows mostrar "O Windows protegeu o computador", clique em "Mais informações" e depois em "Executar assim mesmo".</small></p></li>
+        </ol>
+        <dl class="req">
+          <div><dt data-i18n="rOs">Sistema</dt><dd data-i18n="rOsV">Windows 10 ou 11 (64 bits)</dd></div>
+          <div><dt data-i18n="rNet">Internet</dt><dd data-i18n="rNetV">Necessária para jogar online</dd></div>
+          <div><dt data-i18n="rLang">Idiomas</dt><dd data-i18n="rLangV">Português, inglês e espanhol</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="assets/logo.png" alt="Go Pool">
+    <span>© <span id="year"></span> Go Pool</span>
+  </div>
+</footer>
+
+<script>
+  // ───── Edite aqui a cada build nova ─────
+  const DOWNLOAD_URL = "https://drive.google.com/file/d/COLE_O_ID_DO_ARQUIVO/view?usp=sharing";
+  const VERSION = "0.1.6";
+  const SIZE = "000 MB";
+  // ────────────────────────────────────────
+
+  const T = {
+    pt: {},  // o texto em português já está no HTML
+    en: {
+      navDownload: "Download",
+      heroTitle: "Pool, snooker and carom in one game. Online, with real physics.",
+      heroCta: "Download free for Windows",
+      heroMeta: "Free to play",
+      trailerEyebrow: "Trailer",
+      trailerTitle: "See Go Pool in action",
+      statGames: "game modes", statCues: "cues to collect", statRooms: "rooms, each with its own radio", statTour: "minutes between tournaments",
+      featEyebrow: "The game",
+      featTitle: "Everything the table has to offer",
+      featLead: "Pool, snooker and carom on the same simulation physics, in a lobby where you play, watch and chat with people from all over the world.",
+      f1Title: "12 game modes",
+      f1Text: "From 8 Ball to Three Cushion, with snooker in between. Pick yours and play it in Arcade or Simulation mode.",
+      f1a: "Pool: 8 Ball, 9 Ball, Rotation and Race",
+      f1b: "Snooker: Snooker, Short Snooker and One Visit",
+      f1c: "Carom: 3 Cushion, 2 Cushion, 4 Ball, 6 Ball and Bullseye",
+      f2Title: "Real physics",
+      f2Text: "Spin, massé, jumps and banks behave like on a real table. And every online shot is checked by the server, so nobody cheats the physics.",
+      f3Title: "Truly online",
+      f3Text: "Host your own room or jump into a quick match against someone at your level.",
+      f3a: "Rooms for up to 16 people, with chat and spectators",
+      f3b: "Team matches up to 3 vs 3",
+      f3c: "Ranking with 18 levels and a Hall of Fame",
+      f4Title: "Tournaments all day",
+      f4Text: "A new tournament every 30 minutes: 16 players, knockout, prizes and a title for the champion.",
+      f5Title: "63 cues to level up",
+      f5Text: "Every cue has its own stats and levels up with gems, changing its look along the way. Many have light and sound effects on the shot.",
+      f6Title: "Always something new",
+      f6Text: "Shot challenges every day, daily quests, gifts for logging in and 90 badges to collect.",
+      f7Title: "8 rooms to play in",
+      f7Text: "Office, Casino, Halloween, Cyberpunk, Nightclub, Arcade, Aquarium and Saloon. Every room has its own radio.",
+      dlEyebrow: "Download",
+      dlTitle: "Download and play now",
+      dlLead: "Go Pool is free. Once installed, it updates itself.",
+      dlButton: "Download for Windows",
+      dlVersion: "Version",
+      s1: "Download the .zip with the button above.",
+      s1n: "Google Drive may warn that it couldn't scan the file because it is large. Just click \"Download anyway\".",
+      s2: "Extract the .zip into a folder.",
+      s2n: "Right-click the file and choose \"Extract All\".",
+      s3: "Open Go Pool.exe and create your account.",
+      s3n: "If Windows shows \"Windows protected your PC\", click \"More info\" and then \"Run anyway\".",
+      rOs: "System", rOsV: "Windows 10 or 11 (64-bit)",
+      rNet: "Internet", rNetV: "Required to play online",
+      rLang: "Languages", rLangV: "English, Portuguese and Spanish",
+    },
+    es: {
+      navDownload: "Descargar",
+      heroTitle: "Pool, snooker y carambola en un solo juego. Online, con física de verdad.",
+      heroCta: "Descargar gratis para Windows",
+      heroMeta: "Gratis para jugar",
+      trailerEyebrow: "Tráiler",
+      trailerTitle: "Mira Go Pool en acción",
+      statGames: "modos de juego", statCues: "tacos para coleccionar", statRooms: "salas, cada una con su radio", statTour: "minutos entre torneos",
+      featEyebrow: "El juego",
+      featTitle: "Todo lo que la mesa puede ofrecer",
+      featLead: "Pool, snooker y carambola con la misma física de simulación, en un lobby donde juegas, miras y charlas con gente de todo el mundo.",
+      f1Title: "12 modos de juego",
+      f1Text: "Del 8 Ball al Three Cushion, pasando por el snooker. Elige el tuyo y juégalo en modo Arcade o Simulation.",
+      f1a: "Pool: 8 Ball, 9 Ball, Rotation y Race",
+      f1b: "Snooker: Snooker, Short Snooker y One Visit",
+      f1c: "Carambola: 3 Cushion, 2 Cushion, 4 Ball, 6 Ball y Bullseye",
+      f2Title: "Física de verdad",
+      f2Text: "Efecto, massé, saltos y bandas se comportan como en una mesa real. Y cada tiro online lo verifica el servidor, así que nadie hace trampa con la física.",
+      f3Title: "Online de verdad",
+      f3Text: "Crea tu sala o entra en una partida rápida contra alguien de tu nivel.",
+      f3a: "Salas de hasta 16 personas, con chat y espectadores",
+      f3b: "Partidas por equipos de hasta 3 contra 3",
+      f3c: "Ranking con 18 niveles y Hall of Fame",
+      f4Title: "Torneos todo el día",
+      f4Text: "Un torneo nuevo cada 30 minutos: 16 jugadores, eliminación directa, premios y título para el campeón.",
+      f5Title: "63 tacos para mejorar",
+      f5Text: "Cada taco tiene sus propios atributos y sube de nivel con gemas, cambiando de aspecto por el camino. Muchos tienen efectos de luz y sonido en el tiro.",
+      f6Title: "Siempre hay algo nuevo",
+      f6Text: "Desafíos de tiro cada día, misiones diarias, regalos por entrar y 90 insignias para coleccionar.",
+      f7Title: "8 salas para jugar",
+      f7Text: "Oficina, Casino, Halloween, Cyberpunk, Nightclub, Arcade, Acuario y Saloon. Cada sala tiene su propia radio.",
+      dlEyebrow: "Descarga",
+      dlTitle: "Descarga y juega ahora",
+      dlLead: "Go Pool es gratis. Una vez instalado, se actualiza solo.",
+      dlButton: "Descargar para Windows",
+      dlVersion: "Versión",
+      s1: "Descarga el .zip con el botón de arriba.",
+      s1n: "Google Drive puede avisar que no pudo analizar el archivo porque es grande. Solo haz clic en \"Descargar de todos modos\".",
+      s2: "Extrae el .zip en una carpeta.",
+      s2n: "Haz clic derecho en el archivo y elige \"Extraer todo\".",
+      s3: "Abre Go Pool.exe y crea tu cuenta.",
+      s3n: "Si Windows muestra \"Windows protegió su PC\", haz clic en \"Más información\" y luego en \"Ejecutar de todas formas\".",
+      rOs: "Sistema", rOsV: "Windows 10 u 11 (64 bits)",
+      rNet: "Internet", rNetV: "Necesaria para jugar online",
+      rLang: "Idiomas", rLangV: "Español, inglés y portugués",
+    },
+  };
+
+  // Portuguese texts come straight from the HTML, so switching back restores them.
+  document.querySelectorAll("[data-i18n]").forEach(el => T.pt[el.dataset.i18n] = el.textContent);
+  const HTML_LANG = { pt: "pt-BR", en: "en", es: "es" };
+
+  function setLang(lang) {
+    if (!T[lang]) lang = "pt";
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const s = T[lang][el.dataset.i18n];
+      if (s) el.textContent = s;
+    });
+    document.documentElement.lang = HTML_LANG[lang];
+    document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+    try { localStorage.setItem("gopool-lang", lang); } catch (e) {}
+  }
+
+  let saved = null;
+  try { saved = localStorage.getItem("gopool-lang"); } catch (e) {}
+  const nav = (navigator.language || "pt").slice(0, 2).toLowerCase();
+  setLang(saved || (T[nav] ? nav : "en"));
+  document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+
+  // Download link, version and size, all from the constants above.
+  document.querySelectorAll(".dl-card .dl-link").forEach(a => a.href = DOWNLOAD_URL);
+  document.querySelectorAll(".ver").forEach(el => el.textContent = "v" + VERSION);
+  document.querySelectorAll(".size").forEach(el => el.textContent = SIZE);
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Top bar turns solid after the hero.
+  const bar = document.getElementById("bar");
+  const onScroll = () => bar.classList.toggle("solid", scrollY > innerHeight * 0.6);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+</script>
+</body>
+</html>
